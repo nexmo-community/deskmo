@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
+use App\TicketEntry;
 use Illuminate\Http\Request;
 
 class TicketEntryController extends Controller
@@ -34,7 +36,24 @@ class TicketEntryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $this->validate($request, [
+            'msisdn' => 'required',
+            'text' => 'required'
+        ]);
+
+        $user = User::where('phone_number', $data['msisdn'])->firstOrFail();
+        $ticket = $user->latestTicketWithActivity();
+
+        $entry = new TicketEntry([
+            'content' => $data['text'],
+            'channel' => 'sms',
+        ]);
+
+        $entry->user()->associate($user);
+        $entry->ticket()->associate($ticket);
+        $entry->save();
+
+        return response('', 204);
     }
 
     /**

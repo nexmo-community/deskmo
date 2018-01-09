@@ -26,4 +26,15 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function latestTicketWithActivity() {
+        // Get all tickets this user is watching
+        $watchedTickets = TicketSubscription::select('ticket_id')->where('user_id', $this->id)->get()->pluck('ticket_id');
+
+        // Grab the latest ticket with activity that's in this list
+        $latestTicketEntry = TicketEntry::select("ticket_id")->whereIn('ticket_id', $watchedTickets)->orderBy('created_at', 'desc')->limit(1)->first();
+
+        // Fetch the actual ticket
+        return $latestTicketEntry->ticket()->first();
+    }
 }
