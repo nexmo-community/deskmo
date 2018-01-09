@@ -4,7 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\User;
 use App\TicketEntry;
+use App\TicketSubscription;
 
 class Ticket extends Model
 {
@@ -13,5 +15,10 @@ class Ticket extends Model
     public function entries()
     {
         return $this->hasMany(TicketEntry::class);
+    }
+
+    public function subscribedUsers()
+    {
+        return $this->belongsToMany(User::class, 'ticket_subscriptions');
     }
 }

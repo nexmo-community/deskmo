@@ -8,6 +8,8 @@ use App\Ticket;
 use App\TicketEntry;
 use App\TicketSubscription;
 use Illuminate\Http\Request;
+use App\Notifications\TicketCreated;
+use Notification;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -76,6 +78,8 @@ class TicketController extends Controller
         $cc->user()->associate(User::find($data['recipient']));
         $cc->ticket()->associate($ticket);
         $cc->save();
+
+        Notification::send($ticket->subscribedUsers()->get(), new TicketCreated($entry));
 
         return redirect(route('ticket.index'));
     }
