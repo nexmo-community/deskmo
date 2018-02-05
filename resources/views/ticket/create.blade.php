@@ -30,6 +30,20 @@
                         {!! Form::text('recipient', '', ['class' => 'form-control']); !!}
                     </div>
                     <div class="form-group">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="notification_method" value="sms">
+                                SMS
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="notification_method" value="voice">
+                                Voice
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         {!! Form::hidden('channel', 'web'); !!}
                         {!! Form::submit('Submit', ['class' => 'btn btn-success']); !!}
                     </div>

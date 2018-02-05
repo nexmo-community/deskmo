@@ -56,6 +56,7 @@ class TicketController extends Controller
             'content' => 'required',
             'recipient' => 'required|exists:users,id',
             'channel' => 'required',
+            'notification_method' => 'required',
         ]);
 
         $user = Auth::user();
@@ -79,7 +80,13 @@ class TicketController extends Controller
         $cc->ticket()->associate($ticket);
         $cc->save();
 
-        Notification::send($ticket->subscribedUsers()->get(), new TicketCreated($entry));
+        if ($data['notification_method'] === 'sms') {
+            Notification::send($ticket->subscribedUsers()->get(), new TicketCreated($entry));
+        } elseif ($data['notification_method'] === 'voice') {
+            // Make a voice call here
+        } else {
+            throw new \Exception('Invalid notification method provided');
+        }
 
         return redirect(route('ticket.index'));
     }
