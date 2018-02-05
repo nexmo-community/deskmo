@@ -19,3 +19,6 @@ Auth::routes();
 
 Route::resource('ticket', 'TicketController');
 Route::resource('ticket-entry', 'TicketEntryController');
+
+Route::get('/webhook/answer/{ticket?}', 'WebhookController@answer');
+
