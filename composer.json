@@ -10,7 +10,8 @@
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4.0",
-        "nexmo/client": "^1.2"
+        "nexmo/client": "^1.2",
+        "nexmo/laravel": "^1.1"
     },
     "require-dev": {
         "filp/whoops": "~2.0",

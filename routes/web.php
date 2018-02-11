@@ -21,4 +21,5 @@ Route::resource('ticket', 'TicketController');
 Route::resource('ticket-entry', 'TicketEntryController');
 
 Route::get('/webhook/answer/{ticket?}', 'WebhookController@answer');
+Route::post('/webhook/event', 'WebhookController@event');
 

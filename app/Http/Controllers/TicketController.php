@@ -12,6 +12,7 @@ use App\Notifications\TicketCreated;
 use Notification;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Nexmo;
 
 class TicketController extends Controller
 {
@@ -83,7 +84,19 @@ class TicketController extends Controller
         if ($data['notification_method'] === 'sms') {
             Notification::send($ticket->subscribedUsers()->get(), new TicketCreated($entry));
         } elseif ($data['notification_method'] === 'voice') {
-            // Make a voice call here
+            $currentHost = 'http://abc123.ngrok.io';
+            Nexmo::calls()->create([
+                'to' => [[
+                    'type' => 'phone',
+                    'number' => $cc->user->phone_number
+                ]],
+                'from' => [
+                    'type' => 'phone',
+                    'number' => '<YOUR_NEXMO_NUMBER>'
+                ],
+                'answer_url' => [$currentHost.'/webhook/answer/'.$entry->id],
+                'event_url' => [$currentHost.'/webhook/event']
+            ]);
         } else {
             throw new \Exception('Invalid notification method provided');
         }
