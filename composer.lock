@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "0cd0dda5abb4cfb98f2d45fdbd94789c",
+    "content-hash": "743ccd52fe91975c333927375b98dd93",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -1167,16 +1167,16 @@
         },
         {
             "name": "nexmo/client",
-            "version": "1.2.1",
+            "version": "1.3.0-beta2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Nexmo/nexmo-php.git",
-                "reference": "7c000329a407efa02910f7e4294165a7ffddae0d"
+                "reference": "b1cc6561856ba82c10e865ad45a94e01b918c5a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Nexmo/nexmo-php/zipball/7c000329a407efa02910f7e4294165a7ffddae0d",
-                "reference": "7c000329a407efa02910f7e4294165a7ffddae0d",
+                "url": "https://api.github.com/repos/Nexmo/nexmo-php/zipball/b1cc6561856ba82c10e865ad45a94e01b918c5a2",
+                "reference": "b1cc6561856ba82c10e865ad45a94e01b918c5a2",
                 "shasum": ""
             },
             "require": {
@@ -1211,7 +1211,7 @@
                 }
             ],
             "description": "PHP Client for using Nexmo's API.",
-            "time": "2018-01-07T21:44:50+00:00"
+            "time": "2018-02-28T12:05:17+00:00"
         },
         {
             "name": "nexmo/laravel",
@@ -4633,7 +4633,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "nexmo/client": 10
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
