@@ -13,6 +13,7 @@ use Notification;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Nexmo;
+use Nexmo\Conversations\Conversation;
 
 class TicketController extends Controller
 {
@@ -97,6 +98,17 @@ class TicketController extends Controller
                 'answer_url' => [$currentHost.'/webhook/answer/'.$entry->id],
                 'event_url' => [$currentHost.'/webhook/event']
             ]);
+        } elseif  ($data['notification_method'] === 'in-app-messaging') {
+            $conversation = (new Conversation())->setDisplayName('Ticket '.$ticket->id);
+            $conversation = Nexmo::conversation()->create($conversation);
+            // Add the current user
+            $users = Nexmo::user();
+            $conversation->addMember($users[$user->nexmo_id]);
+            // And the user that we chose to notify
+            $conversation->addMember($users[$cc->user->nexmo_id]);
+
+            $ticket->conversation_id = $conversation->getId();
+            $ticket->save();
         } else {
             throw new \Exception('Invalid notification method provided');
         }
@@ -112,7 +124,15 @@ class TicketController extends Controller
      */
     public function show(Ticket $ticket)
     {
-        return view('ticket.show', ['ticket' => $ticket]);
+        return view('ticket.show', [
+            'ticket' => $ticket,
+            'user_jwt' => Nexmo::generateJwt([
+                'exp' => time() + 3600,
+                'sub' => Auth::user()->email,
+                'acl' => ["paths" => ["/v1/sessions/**" => (object)[], "/v1/users/**" => (object)[], "/v1/conversations/**" => (object)[]]],
+            ]),
+            'conversation_id' => $ticket->conversation_id,
+        ]);
     }
 
     /**

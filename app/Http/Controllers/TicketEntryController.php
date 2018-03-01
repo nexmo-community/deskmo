@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\TicketEntry;
+use App\Ticket;
 use Illuminate\Http\Request;
 
 class TicketEntryController extends Controller
@@ -37,16 +38,25 @@ class TicketEntryController extends Controller
     public function store(Request $request)
     {
         $data = $this->validate($request, [
-            'msisdn' => 'required',
+            'nexmo_id' => 'required_without_all:msisdn',
+            'ticket_id' => 'required_without_all:msisdn',
+            'msisdn' => 'required_without_all:nexmo_id',
             'text' => 'required'
         ]);
 
-        $user = User::where('phone_number', $data['msisdn'])->firstOrFail();
-        $ticket = $user->latestTicketWithActivity();
+        if (isset($data['msisdn'])) {
+            $user = User::where('phone_number', $data['msisdn'])->firstOrFail();
+            $ticket = $user->latestTicketWithActivity();
+            $channel = 'sms';
+        } else {
+            $user = User::where('nexmo_id', $data['nexmo_id'])->firstOrFail();
+            $ticket = Ticket::findOrFail($data['ticket_id']);
+            $channel = 'web';
+        }
 
         $entry = new TicketEntry([
             'content' => $data['text'],
-            'channel' => 'sms',
+            'channel' => $channel,
         ]);
 
         $entry->user()->associate($user);
