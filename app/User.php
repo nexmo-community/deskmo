@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'phone_number', 'nexmo_id'
+        'name', 'email', 'password', 'phone_number', 'nexmo_id', 'nexmo_number_id'
     ];
 
     /**
@@ -36,5 +36,9 @@ class User extends Authenticatable
 
         // Fetch the actual ticket
         return $latestTicketEntry->ticket()->first();
+    }
+
+    public function nexmoNumber() {
+        return $this->belongsTo(NexmoNumber::class);
     }
 }
