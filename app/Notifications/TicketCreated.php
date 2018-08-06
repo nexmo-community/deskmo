@@ -39,6 +39,7 @@ class TicketCreated extends Notification
     public function toNexmo($notifiable)
     {
         return (new NexmoMessage)
+            ->from($this->entry->from)
             ->content($this->entry->content);
     }
 

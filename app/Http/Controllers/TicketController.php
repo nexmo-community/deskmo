@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\NexmoNumber;
 use Auth;
 use App\User;
 use App\Ticket;
@@ -83,7 +84,11 @@ class TicketController extends Controller
         $cc->save();
 
         if ($data['notification_method'] === 'sms') {
-            Notification::send($ticket->subscribedUsers()->get(), new TicketCreated($entry));
+            $usersToBeNotified = $ticket->subscribedUsers()->get()->groupBy('nexmo_number_id');
+            foreach ($usersToBeNotified as $nexmoNumber => $users) {
+                $entry->from = NexmoNumber::findOrFail($nexmoNumber)->first()->number;
+                Notification::send($users, new TicketCreated($entry));
+            }
         } elseif ($data['notification_method'] === 'voice') {
             $currentHost = 'http://abc123.ngrok.io';
             Nexmo::calls()->create([
