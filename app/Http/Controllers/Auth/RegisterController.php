@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\NexmoNumber;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -32,13 +33,19 @@ class RegisterController extends Controller
     protected $redirectTo = '/';
 
     /**
+     * @var Nexmo\Client
+     */
+    private $nexmoClient;
+
+    /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Nexmo\Client $nexmoClient)
     {
         $this->middleware('guest');
+        $this->nexmoClient = $nexmoClient;
     }
 
     /**
@@ -65,6 +72,8 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $basicNumberInsight = $this->nexmoClient->insights()->basic($data['phone_number']);
+        $nexmoNumber = NexmoNumber::where('country', '=' , $basicNumberInsight['country_code'])->firstOrFail();
         $user = (new NexmoUser())->setName($data['email']);
         $nexmoUser = Nexmo::user()->create($user);
 
@@ -74,6 +83,7 @@ class RegisterController extends Controller
             'password' => bcrypt($data['password']),
             'phone_number' => $data['phone_number'],
             'nexmo_id' => $nexmoUser->getId(),
+            'nexmo_number_id' => $nexmoNumber->id
         ]);
     }
 }
