@@ -85,19 +85,20 @@ class TicketController extends Controller
         if ($data['notification_method'] === 'sms') {
             Notification::send($ticket->subscribedUsers()->get(), new TicketCreated($entry));
         } elseif ($data['notification_method'] === 'voice') {
-            $currentHost = 'http://abc123.ngrok.io';
-            Nexmo::calls()->create([
+            $currentHost = env('PUBLIC_URL', url('/'));
+            $call_options = [
                 'to' => [[
                     'type' => 'phone',
                     'number' => $cc->user->phone_number
                 ]],
                 'from' => [
                     'type' => 'phone',
-                    'number' => '<YOUR_NEXMO_NUMBER>'
+                    'number' => env('NEXMO_NUMBER')
                 ],
                 'answer_url' => [$currentHost.'/webhook/answer/'.$entry->id],
                 'event_url' => [$currentHost.'/webhook/event']
-            ]);
+            ];
+            Nexmo::calls()->create($call_options);
         } elseif  ($data['notification_method'] === 'in-app-messaging') {
             $conversation = (new Conversation())->setDisplayName('Ticket '.$ticket->id);
             $conversation = Nexmo::conversation()->create($conversation);
