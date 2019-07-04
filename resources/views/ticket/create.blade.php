@@ -42,12 +42,6 @@
                                 Voice
                             </label>
                         </div>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="notification_method" value="in-app-messaging">
-                                In-App Messaging
-                            </label>
-                        </div>
                     </div>
                     <div class="form-group">
                         {!! Form::hidden('channel', 'web'); !!}

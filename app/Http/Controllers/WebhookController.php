@@ -34,6 +34,11 @@ class WebhookController extends Controller
                 "action" => "record",
                 "endOnKey" => "#",
                 "beepStart" => true
+            ],
+            [
+                'action' => 'talk',
+                'text' => 'Thank you very much. Goodbye.',
+                'voiceName' => 'Brian'
             ]
         ]);
     }
@@ -42,19 +47,22 @@ class WebhookController extends Controller
         $params = $request->all();
         Log::info('Call event', $params);
         if (isset($params['recording_url'])) {
-            $voiceResponse = $this->transcribeRecording($params['recording_url']);
+            if ($voiceResponse = $this->transcribeRecording($params['recording_url'])) {
 
-            $ticket = Ticket::all()->last();
-            $user = $ticket->subscribedUsers()->first();
+                $ticket = Ticket::all()->last();
+                $user = $ticket->subscribedUsers()->first();
 
-            $entry = new TicketEntry([
-                'content' => $voiceResponse,
-                'channel' => 'voice',
-            ]);
+                $entry = new TicketEntry([
+                    'content' => $voiceResponse,
+                    'channel' => 'voice',
+                ]);
 
-            $entry->user()->associate($user);
-            $entry->ticket()->associate($ticket);
-            $entry->save();
+                error_log(print_r($entry, true));
+
+                $entry->user()->associate($user);
+                $entry->ticket()->associate($ticket);
+                $entry->save();
+            }
         }
         return response('', 204);
     }
@@ -67,12 +75,17 @@ class WebhookController extends Controller
         ]);
 
         $transcriptionResponse = $client->request('POST', 'speech-to-text/api/v1/recognize', [
-            'auth' => ['username', 'password'],
+            'auth' => ['apikey', env('IBM_API_KEY')],
             'headers' => [
                 'Content-Type' => 'audio/mpeg',
             ],
             'body' => $audio
         ]);
+
+        if ($transcriptionResponse->getStatusCode() != 200) {
+            Log::error('Transcription service failed, check your credentials');
+            return false;
+        }
 
         $transcription = json_decode($transcriptionResponse->getBody());
 
@@ -81,6 +94,7 @@ class WebhookController extends Controller
             $voiceResponse .= $result->alternatives[0]->transcript.' ';
         }
 
+        Log::info('Voice Response', [$voiceResponse]);
         return $voiceResponse;
 
     }

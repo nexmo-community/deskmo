@@ -12,11 +12,13 @@ class TicketEntryController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $data = $request->all();
+        $this->saveEntry($data);
     }
 
     /**
@@ -43,25 +45,7 @@ class TicketEntryController extends Controller
             'msisdn' => 'required_without_all:nexmo_id',
             'text' => 'required'
         ]);
-
-        if (isset($data['msisdn'])) {
-            $user = User::where('phone_number', $data['msisdn'])->firstOrFail();
-            $ticket = $user->latestTicketWithActivity();
-            $channel = 'sms';
-        } else {
-            $user = User::where('nexmo_id', $data['nexmo_id'])->firstOrFail();
-            $ticket = Ticket::findOrFail($data['ticket_id']);
-            $channel = 'web';
-        }
-
-        $entry = new TicketEntry([
-            'content' => $data['text'],
-            'channel' => $channel,
-        ]);
-
-        $entry->user()->associate($user);
-        $entry->ticket()->associate($ticket);
-        $entry->save();
+        $this->saveEntry($data);
 
         return response('', 204);
     }
@@ -109,5 +93,36 @@ class TicketEntryController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Store the incoming SMS data, used by both
+     * index() and store()
+     *
+     * @param array $data The $_GET or $_POST data
+     * @return bool true
+     */
+    protected function saveEntry($data)
+    {
+        if (isset($data['msisdn'])) {
+            $user = User::where('phone_number', $data['msisdn'])->firstOrFail();
+            $ticket = $user->latestTicketWithActivity();
+            $channel = 'sms';
+        } else {
+            $user = User::where('nexmo_id', $data['nexmo_id'])->firstOrFail();
+            $ticket = Ticket::findOrFail($data['ticket_id']);
+            $channel = 'web';
+        }
+
+        $entry = new TicketEntry([
+            'content' => $data['text'],
+            'channel' => $channel,
+        ]);
+
+        $entry->user()->associate($user);
+        $entry->ticket()->associate($ticket);
+        $entry->save();
+
+        return true;
     }
 }

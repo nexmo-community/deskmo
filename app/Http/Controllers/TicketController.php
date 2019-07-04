@@ -85,30 +85,20 @@ class TicketController extends Controller
         if ($data['notification_method'] === 'sms') {
             Notification::send($ticket->subscribedUsers()->get(), new TicketCreated($entry));
         } elseif ($data['notification_method'] === 'voice') {
-            $currentHost = 'http://abc123.ngrok.io';
-            Nexmo::calls()->create([
+            $currentHost = env('PUBLIC_URL', url('/'));
+            $call_options = [
                 'to' => [[
                     'type' => 'phone',
                     'number' => $cc->user->phone_number
                 ]],
                 'from' => [
                     'type' => 'phone',
-                    'number' => '<YOUR_NEXMO_NUMBER>'
+                    'number' => env('NEXMO_NUMBER')
                 ],
                 'answer_url' => [$currentHost.'/webhook/answer/'.$entry->id],
                 'event_url' => [$currentHost.'/webhook/event']
-            ]);
-        } elseif  ($data['notification_method'] === 'in-app-messaging') {
-            $conversation = (new Conversation())->setDisplayName('Ticket '.$ticket->id);
-            $conversation = Nexmo::conversation()->create($conversation);
-            // Add the current user
-            $users = Nexmo::user();
-            $conversation->addMember($users[$user->nexmo_id]);
-            // And the user that we chose to notify
-            $conversation->addMember($users[$cc->user->nexmo_id]);
-
-            $ticket->conversation_id = $conversation->getId();
-            $ticket->save();
+            ];
+            Nexmo::calls()->create($call_options);
         } else {
             throw new \Exception('Invalid notification method provided');
         }
