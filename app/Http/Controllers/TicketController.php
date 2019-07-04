@@ -99,17 +99,6 @@ class TicketController extends Controller
                 'event_url' => [$currentHost.'/webhook/event']
             ];
             Nexmo::calls()->create($call_options);
-        } elseif  ($data['notification_method'] === 'in-app-messaging') {
-            $conversation = (new Conversation())->setDisplayName('Ticket '.$ticket->id);
-            $conversation = Nexmo::conversation()->create($conversation);
-            // Add the current user
-            $users = Nexmo::user();
-            $conversation->addMember($users[$user->nexmo_id]);
-            // And the user that we chose to notify
-            $conversation->addMember($users[$cc->user->nexmo_id]);
-
-            $ticket->conversation_id = $conversation->getId();
-            $ticket->save();
         } else {
             throw new \Exception('Invalid notification method provided');
         }
