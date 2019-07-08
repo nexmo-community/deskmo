@@ -15,8 +15,6 @@ services:
       - /app/vendor
     depends_on:
       - postgres
-    environment:
-      DATABASE_URL: postgres://deskmo@postgres/deskmo?current_schema=public_schema
   postgres:
     image: postgres:11-alpine
     environment:
