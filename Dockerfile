@@ -16,7 +16,8 @@ RUN curl -sS https://getcomposer.org/installer | php \
 COPY . /app
 WORKDIR /app
 
-RUN composer install --prefer-source --no-interaction
+RUN composer install --prefer-dist --no-scripts --no-dev --no-autoloader && rm -rf /root/.composer
+
 COPY .env.example .env
 RUN php artisan key:generate
 
