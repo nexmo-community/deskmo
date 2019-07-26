@@ -17,5 +17,7 @@ COPY . /app
 WORKDIR /app
 
 RUN composer install --prefer-source --no-interaction
+COPY .env.example .env
+RUN php artisan key:generate
 
 ENV PATH="~/.composer/vendor/bin:./vendor/bin:${PATH}"
