@@ -13,9 +13,11 @@ RUN curl -sS https://getcomposer.org/installer | php \
         && mv composer.phar /usr/local/bin/ \
         && ln -s /usr/local/bin/composer.phar /usr/local/bin/composer
 
-COPY . /app
+# This is handled by docker-compose, which mounts the current directory at /app
+# COPY . /app
+
 WORKDIR /app
 
-RUN composer install --prefer-source --no-interaction
+RUN composer install --prefer-dist --no-scripts --no-dev && rm -rf /root/.composer
 
 ENV PATH="~/.composer/vendor/bin:./vendor/bin:${PATH}"

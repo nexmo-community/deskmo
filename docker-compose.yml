@@ -6,6 +6,9 @@ services:
       - 3000:80
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - .:/app
+    depends_on:
+      - web
   web:
     build: .
     ports:
@@ -20,3 +23,4 @@ services:
     environment:
       POSTGRES_USER: deskmo
       POSTGRES_DB: deskmo
+      POSTGRES_PASSWORD: deskmo
