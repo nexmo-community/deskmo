@@ -13,8 +13,8 @@ RUN curl -sS https://getcomposer.org/installer | php \
         && mv composer.phar /usr/local/bin/ \
         && ln -s /usr/local/bin/composer.phar /usr/local/bin/composer
 
-# This is handled by docker-compose, which mounts the current directory at /app
-# COPY . /app
+# This is needed so that composer can see the files
+COPY . /app
 
 WORKDIR /app
 
