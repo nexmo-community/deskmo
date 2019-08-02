@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Nexmo;
-use Nexmo\User\User as NexmoUser;
 
 class RegisterController extends Controller
 {
@@ -65,9 +64,6 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $user = (new NexmoUser())->setName($data['email']);
-        $nexmoUser = Nexmo::user()->create($user);
-
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],

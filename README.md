@@ -6,9 +6,14 @@ This application featured in Laravel News! Read the installments:
 * [Part 2: Text-To-Speech calls with Laravel and Nexmo](https://laravel-news.com/text-speech-calls-laravel-nexmo)
 * [Part 3: Real-time messaging with Nexmo and Laravel](https://laravel-news.com/real-time-messaging-nexmo-laravel)
 
-If you'd just like to play with the application as-is, read on ...
+The dependencies for this application are:
 
-## Set up a local Deskmo
+* A Nexmo account! You can [sign up here](https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&utm_medium=github&utm_campaign=deskmo) and get a little free credit to play with
+* Either a local PHP setup, or Docker (and docker-compose) installed.
+
+If you'd just like to play with the application as-is, you can [run the application locally on your machine](#run-locally) or [use the docker setup](#use-docker),
+
+## Run Locally
 
 There are quite a lot of steps, we've tried to break things down to keep it manageable.
 
@@ -105,6 +110,19 @@ Finally, check the `config/services.php` file and update the `nexmo` block there
 ### Run the application
 
 Don't look now, I think we made it! Start the server: `php artisan serve` and then visit <http://localhost:8000>. Well done!!
+
+## Use Docker
+
+There is a `docker-compose` setup ready for you to use. Start by cloning the repo.
+
+Copy `.env.docker` to `.env` - this file holds the configuration for the application.
+
+Start the platform with `docker-compose up`.
+
+Before you try to access the application, we need to configure the Laravel application:
+
+* `docker-compose exec web php artisan key:generate` sets up the token for the application
+* `docker-compose exec web php artisan migrate` prepares the database for use
 
 ## Contributing
 
