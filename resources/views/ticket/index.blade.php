@@ -12,7 +12,6 @@
                         <th>Title</th>
                         <th>Status</th>
                         <th>Entries</th>
-                        <th>Live Chat?</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -22,7 +21,6 @@
                             <td><a href="{{ route("ticket.show", $ticket->id) }}">{{ $ticket->title }}</a></td>
                             <td>{{ $ticket->status }}</td>
                             <td>{{ $ticket->entries()->count() }}</td>
-                            <td>{{ $ticket->conversation_id ? "Live" : "" }}</td>
                         </tr>
                     @empty
                         <tr>
