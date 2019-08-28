@@ -13,7 +13,6 @@ use Notification;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Nexmo;
-use Nexmo\Conversations\Conversation;
 
 class TicketController extends Controller
 {
