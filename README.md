@@ -1,30 +1,30 @@
 # Deskmo: A Multichannel Helpdesk Sample Application using Nexmo and Laravel
 
-This application featured in Laravel News! Read the installments:
+This application was featured in Laravel News! Read the installments:
 
 * [Part 1: Sending and receiving SMS Laravel Notifications with Nexmo](https://laravel-news.com/nexmo-sms-laravel-notifications)
 * [Part 2: Text-To-Speech calls with Laravel and Nexmo](https://laravel-news.com/text-speech-calls-laravel-nexmo)
 * [Part 3: Real-time messaging with Nexmo and Laravel](https://laravel-news.com/real-time-messaging-nexmo-laravel)
 
-If you'd just like to play with the application as-is, you can [run the application locally on your machine](#run-locally) or [use the docker setup](#use-docker), either way **read the Pre-Requisites first**.
+If you'd just like to play with the application as-is, you can [run the application locally on your machine](#run-locally) or [use the docker setup](#use-docker), either way, **read the Pre-Requisites first**.
 
 ## Pre-Requisites
 
-Clone this repo to get your own copy of the code.
+Clone this repo to get your copy of the code.
 
-Copy either `.env.example` or `.env.docker` to `.env` (depending on how you intend to run the project) so that you can add configuration.
+Copy either `.env.example` or `.env.docker` to `.env` (depending on how you intend to run the project) so that you can add a configuration.
 
 ### Stand by with ngrok
 
 You can use [ngrok](https://ngrok.com) to give the project a local URL (also use this if you have docker). I find it helpful to start the tunnel now, so I have the URL to use in the configuration steps with my nexmo number! The Laravel app will run on port 8000 so the ngrok command will be:
 
 ```
-ngrok http 8000
+ngrok Http 8000
 ```
 
 Copy the URL, you'll see this used later as `[ngrok_url]`.
 
-### Prepare to work with Nexmo
+### Prepare to Work with Nexmo
 
 If you don't already have a Nexmo account, you can [sign up here](https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&utm_medium=github&utm_campaign=deskmo).
 
@@ -34,7 +34,7 @@ Install the [Nexmo CLI](https://github.com/Nexmo/nexmo-cli) tool - it's used in 
 
 ### Buy and configure a Nexmo number
 
-We will need a number for sending/receiving messages and calls. You can either buy a number through your account dashboard, or using the CLI:
+We will need several sending/receiving messages and calls. You can either buy a number through your account dashboard or using the CLI:
 
 `nexmo number:search [country] --sms`
 
@@ -48,7 +48,7 @@ We need to create an application and link it to our number for voice calls. Use 
 nexmo app:create deskmo [ngrok_url]/webhook/answer [ngrok_url]/webhook/event --keyfile private.key
 ```
 
-The command outputs a confirmation about the keyfile that it created, and an application UUID. Copy this UUID, it's used as `[app_id]` in the later examples. First we'll use it to link the number to the new app:
+The command outputs a confirmation about the keyfile that is created and an application UUID. Copy this UUID, it's used as `[app_id]` in the later examples. First, we'll use it to link the number to the new app:
 
 ```
 nexmo link:app [number] [app_id]
@@ -64,7 +64,7 @@ That's the Nexmo side of things ready to go. Just a couple more pieces to includ
 
 ### Sign up for IBM Speech to Text
 
-If you want to be able to interact with the application with voice, we'll need to be able to transcribe the words. For this we'll use the IBM Speech to Text Service.
+If you want to be able to interact with the application with voice, we'll need to be able to transcribe the words. For this, we'll use the IBM Speech to Text Service.
 
 * Sign in to the [IBM Dashboard](https://cloud.ibm.com) and click "Create Resource".
 * Choose "Speech to Text"
@@ -86,7 +86,7 @@ In the .env file, we have a few things to add:
 |`PUBLIC_URL` | Your `[ngrok_url]` so we can build the webhook URLs correctly
 |`IBM_API_KEY` | The `apikey` for the Speech to Text service to enable you to speak back when the app calls you and speaks the new ticket details
 
-You may also find it useful to set `APP_ENV` to "development" and `APP_DEBUG` to "true" in case there are any errors - this way you will see them in the web interface.
+You may also find it useful to set `APP_ENV` to "development" and `APP_DEBUG` to "true" in case there are any errors - this way you will see them on the web interface.
 
 Finally, check the `config/services.php` file and update the `nexmo` block there to look like this:
 
@@ -108,17 +108,17 @@ We're ready to run! Instructions for [running locally](#run-locally) or [using t
 
 Run `composer install`.
 
-You can run `php artisan key:generate` while you're here!
+You can run `PHP artisan key: generate` while you're here!
 
 ### Configure a database
 
 Edit `.env` to configure your database settings.
 
-Then run `php artisan migrate`.
+Then run `PHP artisan migrate`.
 
 ### Run the application
 
-Don't look now, I think we made it! Start the server: `php artisan serve` and then visit <http://localhost:8000>. Well done!!
+Don't look now, I think we made it! Start the server: `PHP artisan serve` and then visit <http://localhost:8000>. Well done!!
 
 ## Use Docker
 
@@ -130,18 +130,18 @@ Start the platform with `docker-compose up`.
 
 Before you try to access the application, we need to configure the Laravel application:
 
-* `docker-compose exec web php artisan key:generate` sets up the token for the application
-* `docker-compose exec web php artisan migrate` prepares the database for use
+* `docker-compose exec web PHP artisan key: generate` sets up the token for the application
+* `docker-compose exec web PHP artisan migrate` prepares the database for use
 
-If both of those commands completed successfully, then your app is ready for you! Look at <http://localhost:8000>
+If both of those commands are completed successfully, then your app is ready for you! Look at <http://localhost:8000>
 
 ### Database Access on Docker
 
 This should all work "out of the box" but if you need direct access to the database, you can:
 
-* Run `docker-compose exec postgres bash`
+* Run `docker-compose exec Postgres bash`
 * Then at the bash prompt type `psql -U deskmo`
-* To connect to the database (you already realised it's Postgres), type `\c deskmo`
+* To connect to the database (you already realized it's Postgres), type `\c deskmo`
 
 ## Usage
 
